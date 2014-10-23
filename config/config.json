@@ -1,0 +1,14 @@
+{
+    "livereload": true,
+    "port": 80,
+    "mongoose": {
+        "url": ""
+    },
+    "passport": {
+        "clientID": "",
+        "clientSecret": "",
+        "callbackURL": "http://127.0.0.1/auth/twitch/callback",
+        "scope": "user_read,channel_read,channel_editor,channel_commercial,channel_subscriptions,channel_check_subscription",
+        "scopeArray": ["user_read","channel_read","channel_editor","channel_commercial","channel_subscriptions","channel_check_subscription"]
+    }
+}
