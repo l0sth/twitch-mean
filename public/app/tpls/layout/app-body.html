@@ -10,8 +10,8 @@
             <a class="navbar-brand" href="/#/app/homepage">Project name</a>
         </div>
         <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/#/app/homepage">Home</a></li>
+            <ul nav-tabs>
+                <li><a href="/#/app/homepage">Homepage</a></li>
                 <li><a href="/#/app/members" ng-show="user.loggedIn == true">Members</a></li>
                 <li><a href="/auth/twitch" ng-show="(user.loggedIn == null || user.loggedIn == false)">Login with Twitch</a></li>
                 <li><a href="/logout" ng-show="user.loggedIn == true">Logout</a></li>

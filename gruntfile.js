@@ -1,3 +1,5 @@
+var config = require('./config/config.json');
+
 module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
@@ -43,7 +45,7 @@ module.exports = function (grunt) {
             },
             livereload: {
                 options: {
-                    livereload: true
+                    livereload: config.livereload
                 },
                 files: [
                     'public/assets/css/**/*',
