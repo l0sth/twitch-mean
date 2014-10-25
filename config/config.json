@@ -8,7 +8,7 @@
         "clientID": "",
         "clientSecret": "",
         "callbackURL": "http://127.0.0.1/auth/twitch/callback",
-        "scope": "user_read",
-        "scopeArray": ["user_read"]
+        "scope": "user_read,channel_read",
+        "scopeArray": ["user_read","channel_read"]
     }
 }
