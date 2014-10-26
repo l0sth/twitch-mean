@@ -2,14 +2,16 @@ var config         = require('./config/config.json');
 var express        = require('express');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
-var directory      = require('serve-index');
 var passport       = require('passport');
 var strategy       = require('passport-twitch').Strategy;
 var session        = require('express-session');
 var mongoSession   = require('connect-mongo')(session);
 var mongoose       = require('mongoose');
-var csrf           = require('csurf');
+var lusca          = require('lusca');
+var csrf           = lusca.csrf();
 var app            = express();
+
+var conditionalCSRF;
 
 mongoose.connect(config.mongoose.url, function(err) {
     if (!err) {
@@ -33,7 +35,7 @@ mongoose.connect(config.mongoose.url, function(err) {
             if (req.isAuthenticated()) {
                 return next();
             }
-            return res.redirect("/#/login");
+            return res.redirect("/#/homepage");
         }
 
         passport.serializeUser(function(user, done) {
@@ -68,7 +70,7 @@ mongoose.connect(config.mongoose.url, function(err) {
                 clientID: config.passport.clientID,
                 clientSecret: config.passport.clientSecret,
                 callbackURL: config.passport.callbackURL,
-                scope: config.passport.scope
+                scope: config.passport.scopes
             },
             function(accessToken, refreshToken, profile, done) {
                 process.nextTick(function() {
@@ -100,7 +102,7 @@ mongoose.connect(config.mongoose.url, function(err) {
             }),
             resave: true,
             saveUninitialized: true,
-            secret: 'secret',
+            secret: config.security.sessionSecret,
             auto_reconnect: true,
             cookie: {
                 httpOnly: true
@@ -110,19 +112,50 @@ mongoose.connect(config.mongoose.url, function(err) {
         app.use(passport.initialize());
         app.use(passport.session());
 
-        var csrfValue = function(req) {
-            var token = (req.body && req.body._csrf) || (req.query && req.query._csrf) || (req.headers['x-csrf-token']) || (req.headers['x-xsrf-token']);
-            return token;
-        };
+        if (config.security.csrf.enabled) {
+            conditionalCSRF = function(req, res, next) {
+                if (Boolean(config.security.csrf.freeRoutes[req.path])) {
+                    next();
+                } else {
+                    csrf(req, res, next);
+                }
+            }
+            app.use(conditionalCSRF);
+        }
 
-        app.use(csrf({
-            value: csrfValue
-        }));
+        if (config.security.csp.enabled) {
+            app.use(lusca.csp({
+                reportOnly: config.security.csp.reportOnly,
+                reportUri: config.security.csp.reportUri,
+                policy: {
+                    "connect-src": config.security.csp.policy['connect-src'],
+                    "default-src": config.security.csp.policy['default-src'],
+                    "font-src": config.security.csp.policy['font-src'],
+                    "frame-src": config.security.csp.policy['frame-src'],
+                    "object-src": config.security.csp.policy['object-src'],
+                    "script-src": config.security.csp.policy['script-src'],
+                    "style-src": config.security.csp.policy['style-src']
+                }
+            }));
+        }
 
-        app.use(function(req, res, next) {
-            res.cookie('_csrf', req.csrfToken());
-            next();
-        });
+        if (config.security.xframe.enabled) {
+            app.use(lusca.xframe(config.security.xframe.value));
+        }
+
+
+        if (config.security.p3p.enabled) {
+            app.use(lusca.p3p(config.security.p3p.value));
+        }
+
+        if (config.security.hsts.enabled) {
+            app.use(lusca.hsts({
+                maxAge: config.security.hsts.maxAge,
+                includeSubDomains: config.security.hsts.includeSubDomains
+            }));
+        }
+
+        app.use(lusca.xssProtection(config.security.xssProtection));
 
         if (config.livereload) {
             app.use(require('connect-livereload')({
@@ -133,7 +166,7 @@ mongoose.connect(config.mongoose.url, function(err) {
 
         app.use(function(err, req, res, next) {
             console.error(err.stack);
-            res.render('/#/error');
+            res.redirect('/#/error');
         });
 
         app.get('/', function(req, res) {
@@ -145,13 +178,13 @@ mongoose.connect(config.mongoose.url, function(err) {
         });
 
         app.get('/auth/twitch', passport.authenticate('twitch', {
-            scope: config.passport.scopeArray
+            scope: config.passport.scopes.split(',')
         }), function(req, res) {
             //
         });
 
         app.get('/auth/twitch/callback', passport.authenticate('twitch', {
-            failureRedirect: '/#/login'
+            failureRedirect: '/#/homepage'
         }), function(req, res) {
             res.redirect('/#/homepage');
         });

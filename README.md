@@ -22,6 +22,28 @@ Service | Description
 - Type ``npm install`` in the root directory
 - Type ``grunt`` in the root directory when everything is installed
 
+## Protections
+
+**Content Security Policy (CSP)**
+
+Content Security Policy (CSP) is a computer security concept, to prevent cross-site scripting (XSS) and related attacks. It is a Candidate Recommendation of the W3C working group on Web Application Security. CSP provides a standard HTTP header that allows website owners to declare approved sources of content that browsers should be allowed to load on that page — covered types are JavaScript, CSS, HTML frames, fonts, images and embeddable objects such as Java applets, ActiveX, audio and video files.
+
+**Cross-Site Request Forgery (CSRF)**
+
+CSRF is an attack which forces an end user to execute unwanted actions on a web application in which he/she is currently authenticated. With a little help of social engineering (like sending a link via email/chat), an attacker may trick the users of a web application into executing actions of the attacker's choosing. A successful CSRF exploit can compromise end user data and operation in case of normal user. If the targeted end user is the administrator account, this can compromise the entire web application.
+
+**Privacy Preferences Project (P3P)**
+
+The Platform for Privacy Preferences Project (P3P) is a protocol allowing websites to declare their intended use of information they collect about web browser users. Designed to give users more control of their personal information when browsing, P3P was developed by the World Wide Web Consortium (W3C) and officially recommended on April 16, 2002. Development ceased shortly thereafter and there have been very few implementations of P3P. Microsoft Internet Explorer is the only major browser to support P3P. The president of TRUSTe has stated that P3P has not been implemented widely due to the difficulty and lack of value.
+
+**HTTP Strict Transport Security (HSTS)**
+
+HTTP Strict Transport Security (HSTS) is a web security policy mechanism whereby a web server declares that complying user agents (such as a web browser) are to interact with it using only secure HTTPS connections (i.e. HTTP layered over TLS/SSL). HSTS is an IETF standards track protocol and is specified in [RFC 6797](http://tools.ietf.org/html/rfc6797).
+
+**X-Frame**
+
+The X-Frame-Options HTTP response header can be used to indicate whether or not a browser should be allowed to render a page in a <frame>, <iframe> or <object> . Sites can use this to avoid clickjacking attacks, by ensuring that their content is not embedded into other sites.
+
 ## License
 
 The MIT License (MIT)

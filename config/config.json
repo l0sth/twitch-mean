@@ -1,14 +1,54 @@
 {
-    "livereload": true,
+    "livereload": false,
     "port": 80,
     "mongoose": {
-        "url": ""
+        "url": "mongodb://<username>:<password>@<ip>:<port>/<collection>"
     },
     "passport": {
         "clientID": "",
         "clientSecret": "",
         "callbackURL": "http://127.0.0.1/auth/twitch/callback",
-        "scope": "user_read,channel_read",
-        "scopeArray": ["user_read","channel_read"]
+        "scopes": "user_read,channel_read"
+    },
+    "security": {
+        "sessionSecret": "secret",
+        "csp": {
+            "enabled": true,
+            "reportOnly": true,
+            "reportUri": "/csp_report",
+            "policy": {
+                "default-src": "'self'",
+                "script-src": "'self' https://apis.google.com https://oss.maxcdn.com http://127.0.0.1 http://127.0.0.1:35729/livereload.js http://ajax.googleapis.com https://ajax.googleapis.com 'unsafe-eval' 'unsafe-inline'",
+                "style-src": "'self' 'unsafe-inline'",
+                "font-src": "'self'",
+                "connect-src": "'self' ws://127.0.0.1:35729/livereload",
+                "frame-src": "'self'",
+                "object-src": "'self'"
+            }
+        },
+        "csrf": {
+            "enabled": true,
+            "freeRoutes": {
+                "/auth/twitch": true,
+                "/auth/twitch/callback": true,
+                "/api/user": true,
+                "/csp_report": true,
+                "/logout": true
+            }
+        },
+        "p3p": {
+            "enabled": true,
+            "value": "ABCDEF"
+        },
+        "hsts": {
+            "enabled": true,
+            "maxAge": 31536000,
+            "includeSubDomains": true
+        },
+        "xframe": {
+            "enabled": true,
+            "value": "SAMEORIGIN"
+        },
+        "xssProtection": true
     }
 }

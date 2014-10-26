@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('twitch.widgets', []).
-directive('yourDirective', function() {
+directive('yourWidget', function() {
 
     return {
         restrict: 'EAC',

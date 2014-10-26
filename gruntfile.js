@@ -96,7 +96,8 @@ module.exports = function(grunt) {
                         'public/app/js/controllers.js',
                         'public/app/js/directives.js',
                         'public/app/js/factory.js',
-                        'public/app/js/services.js'
+                        'public/app/js/services.js',
+                        'public/app/js/custom.js'
                     ]
                 },
                 options: {

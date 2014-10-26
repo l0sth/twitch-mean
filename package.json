@@ -33,6 +33,6 @@
       "express": "*",
       "connect-livereload": "*",
       "ejs": "*",
-      "csurf": "*"
+      "lusca": "*"
   }
 }

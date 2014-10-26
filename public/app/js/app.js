@@ -19,14 +19,19 @@ var app = angular.module('twitch-mean-app', [
 });
 
 app.run(function($http, $cookies) {
-    // CSRF Protection.
-    $http.defaults.headers.post['x-csrf-token'] = $cookies._csrf;
+    // CSRF Token
+    $http.defaults.headers.post['X-CSRF-Token'] = $cookies._csrf;
+    $http.defaults.headers.common['X-CSRF-Token'] = $cookies._csrf;
 });
 
 
 app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $httpProvider.defaults.useXDomain = true;
+
+    $httpProvider.defaults.xsrfHeaderName = 'x-csrf-token';
+    $httpProvider.defaults.xsrfCookieName = 'x-csrf-token';
+
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
     $httpProvider.responseInterceptors.push(function($q, $location) {
@@ -44,6 +49,17 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             );
         }
     });
+
+    var appHelper = {
+        templatesDir: 'app/tpls',
+        assetsDir: 'assets',
+        templatePath: function(view_name) {
+            return this.templatesDir + '/' + view_name + '.html';
+        },
+        assetPath: function(file_path) {
+            return this.assetsDir + '/' + file_path;
+        }
+    };
 
     // Check if the user is logged in using the internal API.
     var checkLoggedin = function($q, $timeout, $http, $location) {
@@ -89,6 +105,13 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         resolve: {
             // User must be logged in to see this page.
             isLogged: checkLoggedin
+        }
+    }).
+    state('error', {
+        url: '/error',
+        templateUrl: appHelper.templatePath('error'),
+        controller: function() {
+            //
         }
     })
 });
