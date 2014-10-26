@@ -44,6 +44,10 @@ HTTP Strict Transport Security (HSTS) is a web security policy mechanism whereby
 
 The X-Frame-Options HTTP response header can be used to indicate whether or not a browser should be allowed to render a page in a <frame>, <iframe> or <object> . Sites can use this to avoid clickjacking attacks, by ensuring that their content is not embedded into other sites.
 
+**Cross-Site Scripting (XSS)**
+
+Cross-Site Scripting (XSS) is a type of computer security vulnerability typically found in Web applications. XSS enables attackers to inject client-side script into Web pages viewed by other users. A cross-site scripting vulnerability may be used by attackers to bypass access controls such as the same origin policy.
+
 ## License
 
 The MIT License (MIT)
