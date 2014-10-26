@@ -15,8 +15,16 @@ mongoose.connect(config.mongoose.url, function(err) {
     if (!err) {
         var Schema = mongoose.Schema;
         var userSchema = new Schema({
-            username: { type: String, required: true, trim: true },
-            twitch: { type: Object, required: true, trim: true }
+            username: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            twitch: {
+                type: Object,
+                required: true,
+                trim: true
+            }
         });
 
         var User = mongoose.model('users', userSchema);
@@ -29,7 +37,9 @@ mongoose.connect(config.mongoose.url, function(err) {
         }
 
         passport.serializeUser(function(user, done) {
-            User.findOne({username: user._json.display_name}, function (err, result) {
+            User.findOne({
+                username: user._json.display_name
+            }, function(err, result) {
                 if (result) {
                     result.twitch = user._json;
                     result.save();
@@ -44,7 +54,9 @@ mongoose.connect(config.mongoose.url, function(err) {
         });
 
         passport.deserializeUser(function(obj, done) {
-            User.findOne({username: obj._json.display_name}, function (err, result) {
+            User.findOne({
+                username: obj._json.display_name
+            }, function(err, result) {
                 if (result) {
                     obj.active = result.active;
                 }
@@ -59,7 +71,7 @@ mongoose.connect(config.mongoose.url, function(err) {
                 scope: config.passport.scope
             },
             function(accessToken, refreshToken, profile, done) {
-                process.nextTick(function () {
+                process.nextTick(function() {
                     return done(null, profile);
                 });
             }
@@ -90,23 +102,24 @@ mongoose.connect(config.mongoose.url, function(err) {
             saveUninitialized: true,
             secret: 'secret',
             auto_reconnect: true,
-            cookie: {httpOnly: true}
+            cookie: {
+                httpOnly: true
+            }
         });
         app.use(sessiondb);
         app.use(passport.initialize());
         app.use(passport.session());
 
         var csrfValue = function(req) {
-            var token = (req.body && req.body._csrf)
-                || (req.query && req.query._csrf)
-                || (req.headers['x-csrf-token'])
-                || (req.headers['x-xsrf-token']);
+            var token = (req.body && req.body._csrf) || (req.query && req.query._csrf) || (req.headers['x-csrf-token']) || (req.headers['x-xsrf-token']);
             return token;
         };
 
-        app.use(csrf({value: csrfValue}));
+        app.use(csrf({
+            value: csrfValue
+        }));
 
-        app.use(function (req, res, next) {
+        app.use(function(req, res, next) {
             res.cookie('_csrf', req.csrfToken());
             next();
         });
@@ -118,12 +131,12 @@ mongoose.connect(config.mongoose.url, function(err) {
             }));
         }
 
-        app.use(function(err, req, res, next){
+        app.use(function(err, req, res, next) {
             console.error(err.stack);
             res.render('/#/error');
         });
 
-        app.get('/', function (req, res) {
+        app.get('/', function(req, res) {
             res.render('index.html');
         });
 
@@ -131,20 +144,24 @@ mongoose.connect(config.mongoose.url, function(err) {
             res.send(req.isAuthenticated() ? req.user : {});
         });
 
-        app.get('/auth/twitch', passport.authenticate('twitch', { scope: config.passport.scopeArray }), function(req, res){
+        app.get('/auth/twitch', passport.authenticate('twitch', {
+            scope: config.passport.scopeArray
+        }), function(req, res) {
             //
         });
 
-        app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedirect: '/#/login' }), function(req, res) {
+        app.get('/auth/twitch/callback', passport.authenticate('twitch', {
+            failureRedirect: '/#/login'
+        }), function(req, res) {
             res.redirect('/#/homepage');
         });
 
-        app.get('/logout', function(req, res){
+        app.get('/logout', function(req, res) {
             req.logout();
             res.redirect('/#/homepage');
         });
 
-        app.get('*', ensureAuthenticated, function(req, res){
+        app.get('*', ensureAuthenticated, function(req, res) {
             res.render('index.html');
         });
 

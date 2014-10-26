@@ -16,10 +16,11 @@
                 <li><a href="/auth/twitch" ng-show="(user.loggedIn == null || user.loggedIn == false)">Login with Twitch</a></li>
                 <li><a href="/logout" ng-show="user.loggedIn == true">Logout</a></li>
             </ul>
-        </div><!--/.nav-collapse -->
+        </div>
+        <!--/.nav-collapse -->
     </div>
 </div>
 
 <div class="main-content">
-	<ui-view class="main-content-view"></ui-view>
+    <ui-view class="main-content-view"></ui-view>
 </div>
